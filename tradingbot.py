@@ -26,6 +26,10 @@ ALPACA_CREDS = {
 }
 
 
+#can modift stop loss and take profit here
+take_profit_percent= 1.20
+stop_loss_percent=0.95
+
 
 class MLTrader(Strategy):
 #this method will run once when bot starts
@@ -43,7 +47,7 @@ class MLTrader(Strategy):
 
         cash = self.get_cash() #get the current cash val in account
         last_price= self.get_last_price(self.symbol) #returns last known price of asset
-        quantity= round(cash *self.cash_at_risk / last_price,0) #Formula that determines how many of asset we'll trade per order
+        quantity= (cash *self.cash_at_risk // last_price) #Formula that determines how many of asset we'll trade per order
         return cash, last_price, quantity
     
     def get_dates(self):
@@ -83,8 +87,8 @@ class MLTrader(Strategy):
                     quantity,
                     "buy",
                     type="bracket",
-                    take_profit_price=last_price*1.20 ,#take profit at 20%
-                    stop_loss_price=last_price*0.95 #stop loss of 5%
+                    take_profit_price=last_price*take_profit_percent ,#take profit at 20%
+                    stop_loss_price=last_price*stop_loss_percent #stop loss of 5%
                 )
                 #submit order to alpaca
                 self.submit_order(order)
@@ -99,8 +103,8 @@ class MLTrader(Strategy):
                         quantity,
                         "sell",
                         type="bracket",
-                        take_profit_price= last_price*0.8 ,#take profit at 20%
-                        stop_loss_price= last_price*1.05 #stop loss of 5%
+                        take_profit_price= last_price*(take_profit_percent-(2*(take_profit_percent-1))) ,#take profit at 20%
+                        stop_loss_price= last_price*(stop_loss_percent-(2*(stop_loss_percent-1))) #stop loss of 5%
                         )
                             #submit order to alpaca
                 self.submit_order(order)
@@ -108,9 +112,11 @@ class MLTrader(Strategy):
 
             
 #strt and end dates **IMPORTANT**
+
 #can tweak these
-start_date=datetime(2022,1,1)
+start_date=datetime(2020,1,1)
 end_date=datetime(2023,12,31)
+cash_at_risk=0.5
 
 #our broker is Alpaca
 broker = Alpaca(ALPACA_CREDS)
@@ -119,7 +125,7 @@ broker = Alpaca(ALPACA_CREDS)
 #stock currently being traded is SPY
 #cash at risk determines size of trade. (0-1) 
 strategy = MLTrader(name='mlstrat',broker=broker,parameters={"symbol":"SPY" , 
-                                                             "cash_at_risk":0.5}) #**
+                                                             "cash_at_risk":cash_at_risk}) #**
 
 #our backtest of our instance of our trading bot
 strategy.backtest(
