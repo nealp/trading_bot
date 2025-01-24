@@ -110,11 +110,12 @@ class MLTrader(Strategy):
                             #submit order to alpaca
                 self.submit_order(order)
                 self.last_trade="sell"
-
     def after_market_closes(self):
-        self.log_message("The market is closed")
-        self.log_message(f"The total value of our portfolio is {self.portfolio_value}")
-        self.log_message(f"The amount of cash we have is {self.cash}")
+            self.log_message("The market is closed")
+            self.log_message(f"The total value of our portfolio is {self.portfolio_value}")
+            self.log_message(f"The amount of cash we have is {self.cash}")
+
+
 #strt and end dates **IMPORTANT**
 
 #can tweak these
@@ -143,3 +144,10 @@ else: #live trade
     trader= Trader() #create variable to host our live trading object
     trader.add_strategy(strategy) #import our MLTrader strategy 
     trader.run_all() #runs the strategy live
+
+
+
+
+#sidie notes 
+
+#set up env vars
