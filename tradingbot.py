@@ -133,21 +133,24 @@ strategy = MLTrader(name='mlstrat',broker=broker,parameters={"symbol":"SPY" ,
                                                              "cash_at_risk":cash_at_risk}) #**
 
 
-if IS_BACKTESTING: #if we're backetesting
-    MLTrader.backtest(
-    YahooDataBacktesting,
-    start_date,
-    end_date,
-    parameters={"symbol":"SPY",  "cash_at_risk":cash_at_risk } )
-else: #live trade
+if __name__ == "__main__":
 
-    trader= Trader() #create variable to host our live trading object
-    trader.add_strategy(strategy) #import our MLTrader strategy 
-    trader.run_all() #runs the strategy live
+    if IS_BACKTESTING: #if we're backetesting
+        MLTrader.backtest(
+        YahooDataBacktesting,
+        start_date,
+        end_date,
+        parameters={"symbol":"SPY",  "cash_at_risk":cash_at_risk } )
+    else: #live trade
+
+        trader= Trader() #create variable to host our live trading object
+        trader.add_strategy(strategy) #import our MLTrader strategy 
+        trader.run_all() #runs the strategy live
 
 
 
 
 #sidie notes 
 
-#set up env vars
+#set up env vars and get rid of creds
+#get ride of live_trade.py 
