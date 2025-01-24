@@ -12,6 +12,7 @@ from timedelta import Timedelta #for calculating time diff.
 from finbert_utils import estimate_sentiment #ML model
 
 import creds
+from creds import IS_BACKTESTING
 
 API_KEY = creds.API_KEY
 API_SECRET= creds.API_SECRET
@@ -110,7 +111,10 @@ class MLTrader(Strategy):
                 self.submit_order(order)
                 self.last_trade="sell"
 
-
+    def after_market_closes(self):
+        self.log_message("The market is closed")
+        self.log_message(f"The total value of our portfolio is {self.portfolio_value}")
+        self.log_message(f"The amount of cash we have is {self.cash}")
 #strt and end dates **IMPORTANT**
 
 #can tweak these
@@ -127,10 +131,15 @@ broker = Alpaca(ALPACA_CREDS)
 strategy = MLTrader(name='mlstrat',broker=broker,parameters={"symbol":"SPY" , 
                                                              "cash_at_risk":cash_at_risk}) #**
 
-#our backtest of our instance of our trading bot
-strategy.backtest(
+
+if IS_BACKTESTING: #if we're backetesting
+    MLTrader.backtest(
     YahooDataBacktesting,
     start_date,
     end_date,
-    parameters={"symbol":"SPY",  "cash_at_risk":cash_at_risk } #**
-)
+    parameters={"symbol":"SPY",  "cash_at_risk":cash_at_risk } )
+else: #live trade
+
+    trader= Trader() #create variable to host our live trading object
+    trader.add_strategy(strategy) #import our MLTrader strategy 
+    trader.run_all() #runs the strategy live
