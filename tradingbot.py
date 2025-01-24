@@ -110,7 +110,7 @@ class MLTrader(Strategy):
                 self.submit_order(order)
                 self.last_trade="sell"
 
-            
+
 #strt and end dates **IMPORTANT**
 
 #can tweak these
@@ -132,5 +132,5 @@ strategy.backtest(
     YahooDataBacktesting,
     start_date,
     end_date,
-    parameters={"symbol":"SPY",  "cash_at_risk":0.5 } #**
+    parameters={"symbol":"SPY",  "cash_at_risk":cash_at_risk } #**
 )
