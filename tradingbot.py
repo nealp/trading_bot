@@ -119,8 +119,8 @@ class MLTrader(Strategy):
 #strt and end dates **IMPORTANT**
 
 #can tweak these
-start_date=datetime(2020,1,1)
-end_date=datetime(2023,12,31)
+start_date=datetime(2021,1,1)
+end_date=datetime(2022,1,1)
 cash_at_risk=0.5
 
 #our broker is Alpaca
@@ -150,7 +150,4 @@ if __name__ == "__main__":
 
 
 
-#sidie notes 
 
-#set up env vars and get rid of creds
-#get ride of live_trade.py 
